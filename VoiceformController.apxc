@@ -1,12 +1,13 @@
 public class VoiceformController {
-	public String queryString {get; private set;}
+    private static final String BASE_URL = 'YOUR_SURVEY_LINK';
+    public String formUrl {get; private set;}
 
     public VoiceformController() {
         // Initialize the query string
-        queryString = buildQueryString();
+        formUrl = buildFormUrl();
     }
 
-    private String buildQueryString() {
+    private String buildFormUrl() {
         Map<String, String> params = ApexPages.currentPage().getParameters();
         String tempQueryString = '';
         
@@ -49,17 +50,20 @@ public class VoiceformController {
             tempQueryString = tempQueryString.substring(0, tempQueryString.length() - 1);
         }
 
-        return tempQueryString;
+        if (!String.isEmpty(tempQueryString)) {
+            return BASE_URL + '?' + tempQueryString;
+        } else {
+            return BASE_URL; // Return the base URL if no parameters are present
+        }
     }
 
     public PageReference redirect() {
-        if (!String.isEmpty(queryString)) { // Check if the queryString is not empty
-            String baseUrl = 'https://staging.voiceform.com/to/kSZG2c6e6y7NrMj1';
-            PageReference redirectPage = new PageReference(baseUrl + '?' + queryString);
+        if (!String.isEmpty(formUrl)) {
+            PageReference redirectPage = new PageReference(formUrl);
             redirectPage.setRedirect(true);
             return redirectPage;
         }
-        // Return null or some default PageReference if there is no queryString
+        // Return null or some default PageReference if there is no formUrl
         return null;
     }
 }
