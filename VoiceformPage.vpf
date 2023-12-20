@@ -1,0 +1,39 @@
+<!-- USE THIS PAGE INSTEAD IF YOUR POST-CHAT EXPERINCE USESE A SEPARATE WINDOW <apex:page controller="PostChatController" action="{!redirect}" showHeader="false" > -->
+<apex:page controller="VoiceformController" showHeader="false" >
+    <html>
+        <head>
+            <style>
+                body {
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    min-height: 100vh;
+                    margin: 0;
+                }
+
+                .loader {
+                    border: 5px solid #f3f3f3; /* Light grey */
+                    border-top: 5px solid #3498db; /* Blue */
+                    border-radius: 50%;
+                    width: 50px;
+                    height: 50px;
+                    animation: spin 2s linear infinite;
+                }
+
+                @keyframes spin {
+                    0% { transform: rotate(0deg); }
+                    100% { transform: rotate(360deg); }
+                }
+            </style>
+            <script>
+                window.onload = function() {
+                    // WE USE THIS MESSAGE TO UPDATE AN IFRAME IN BUTTON EMBEDDING
+                    window.parent.postMessage({ action: 'updateIframeSrc', url: '{!formUrl}'}, '*');
+                };
+            </script>
+        </head>
+        <body>
+            <div class="loader"></div>
+        </body>
+    </html>
+</apex:page>
