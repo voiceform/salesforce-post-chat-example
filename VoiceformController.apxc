@@ -1,0 +1,65 @@
+public class VoiceformController {
+	public String queryString {get; private set;}
+
+    public VoiceformController() {
+        // Initialize the query string
+        queryString = buildQueryString();
+    }
+
+    private String buildQueryString() {
+        Map<String, String> params = ApexPages.currentPage().getParameters();
+        String tempQueryString = '';
+        
+        // List of expected parameters
+        String[] expectedParams = new String[]{
+            'requestTime', 'startTime', 'deploymentId', 'buttonId', 'chatKey', 
+            'lastVisitedPage', 'originalReferrer', 'latitude', 'longitude', 'city',
+            'region', 'country', 'organization', 'disconnectedBy', 'windowLanguage'
+        };
+        
+        // Iterate over the expected parameters and append them to the query string if they exist
+        for (String paramKey : expectedParams) {
+            String paramValue = params.get(paramKey);
+            if (!String.isEmpty(paramValue)) { // Check if the parameter is not empty
+                tempQueryString += EncodingUtil.urlEncode(paramKey, 'UTF-8') + '=' + EncodingUtil.urlEncode(paramValue, 'UTF-8') + '&';
+            }
+        }
+        
+        // Append the attachedRecords if present and properly formatted as JSON
+        String attachedRecords = params.get('attachedRecords');
+        if (!String.isEmpty(attachedRecords)) { // Check if the attachedRecords is not empty
+            try {
+                // Parse the JSON string
+                Map<String, Object> parsedRecords = (Map<String, Object>) JSON.deserializeUntyped(attachedRecords);
+                
+                // Append key-value pairs to the query string
+                for (String key : parsedRecords.keySet()) {
+                    Object value = parsedRecords.get(key);
+                    if (value != null) { // Check if the value is not null
+                        tempQueryString += EncodingUtil.urlEncode(key, 'UTF-8') + '=' + EncodingUtil.urlEncode(String.valueOf(value), 'UTF-8') + '&';
+                    }
+                }
+            } catch (Exception e) {
+                // Handle the exception if the JSON is not well-formed
+            }
+        }
+
+        // Remove the last '&' if necessary
+        if (tempQueryString.endsWith('&')) {
+            tempQueryString = tempQueryString.substring(0, tempQueryString.length() - 1);
+        }
+
+        return tempQueryString;
+    }
+
+    public PageReference redirect() {
+        if (!String.isEmpty(queryString)) { // Check if the queryString is not empty
+            String baseUrl = 'https://staging.voiceform.com/to/kSZG2c6e6y7NrMj1';
+            PageReference redirectPage = new PageReference(baseUrl + '?' + queryString);
+            redirectPage.setRedirect(true);
+            return redirectPage;
+        }
+        // Return null or some default PageReference if there is no queryString
+        return null;
+    }
+}
