@@ -1,4 +1,4 @@
-<!-- USE THIS PAGE INSTEAD IF YOUR POST-CHAT EXPERINCE USESE A SEPARATE WINDOW <apex:page controller="PostChatController" action="{!redirect}" showHeader="false" > -->
+<!-- USE THIS PAGE INSTEAD IF YOUR POST-CHAT EXPERINCE USESE A SEPARATE WINDOW <apex:page controller="VoiceformController" action="{!redirect}" showHeader="false" > -->
 <apex:page controller="VoiceformController" showHeader="false" >
     <html>
         <head>
